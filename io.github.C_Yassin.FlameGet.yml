@@ -32,10 +32,10 @@ modules:
         - install -D -m 755 flatpak-flameget.sh /app/bin/start-flameget
         
         - install -Dm644 io.github.C_Yassin.FlameGet.metainfo.xml /app/share/metainfo/io.github.C_Yassin.FlameGet.metainfo.xml
-        - install -Dm644 flameget.svg /app/share/icons/hicolor/scalable/apps/io.github.C_Yassin.FlameGet.svg
+        - install -Dm644 app-icon-flatpack.svg /app/share/icons/hicolor/scalable/apps/io.github.C_Yassin.FlameGet.svg
         - install -Dm644 io.github.C_Yassin.FlameGet.desktop /app/share/applications/io.github.C_Yassin.FlameGet.desktop
 
     sources:
       - type: git
         url: https://github.com/C-Yassin/FlameGet
-        commit: 2929d4893faecf9f1fce24b0a8ebe3e2a439c203
+        commit: 1110268b70888afaf228c42b293170a58cc7ba3f
