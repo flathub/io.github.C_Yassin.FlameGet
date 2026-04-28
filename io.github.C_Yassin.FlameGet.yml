@@ -21,7 +21,28 @@ modules:
         sha256: 60a420ad7085eb616cb6e2bdf0a7206d68ff3d37fb5a956dc44242eb2f79b66b
   
   - python3-requirements.json
-    
+  
+  - name: rustypipe-botguard-x86_64
+    only-arches: [x86_64]
+    buildsystem: simple
+    build-commands:
+      - BINARY_PATH=$(find . -type f -name "*rustypipe-botguard*" | head -n 1) && install -D -m 755 "$BINARY_PATH" /app/share/flameget/binaries/rustypipe-botguard
+    sources:
+      - type: archive
+        url: https://codeberg.org/ThetaDev/rustypipe-botguard/releases/download/v0.1.2/rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz
+        sha256: 4f2ec561e8f9fadece7deadc6ce0624fbdedd852222c3eb194c22153b1323129
+        strip-components: 0
+
+  - name: rustypipe-botguard-aarch64
+    only-arches: [aarch64]
+    buildsystem: simple
+    build-commands:
+      - BINARY_PATH=$(find . -type f -name "*rustypipe-botguard*" | head -n 1) && install -D -m 755 "$BINARY_PATH" /app/share/flameget/binaries/rustypipe-botguard
+    sources:
+      - type: archive
+        url: https://codeberg.org/ThetaDev/rustypipe-botguard/releases/download/v0.1.2/rustypipe-botguard-v0.1.2-aarch64-unknown-linux-gnu.tar.xz
+        sha256: 4d038857374a69aea9be8ded981d93a776dc88d4e254f5c6d292746099abf69a
+        strip-components: 0
   - name: flameget
     buildsystem: simple
 
@@ -38,4 +59,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/C-Yassin/FlameGet
-        commit: 1110268b70888afaf228c42b293170a58cc7ba3f
+        commit: ca4bc48865f9426ebe0f06c8468ab135ee6f40e8
