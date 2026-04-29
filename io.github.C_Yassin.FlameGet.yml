@@ -59,4 +59,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/C-Yassin/FlameGet
-        commit: 9985f7228486b9c6166733b97ab2d8958cab3f2f
+        commit: c0567aba484cadb477658390b6ae099f5833b938
