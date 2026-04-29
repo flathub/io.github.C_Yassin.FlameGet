@@ -10,6 +10,12 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=xdg-download
+cleanup:
+  - /share/bash-completion
+  - /share/doc
+  - /share/fish
+  - /share/man
+  - /share/zsh
 modules:
   - name: aria2
     buildsystem: autotools
