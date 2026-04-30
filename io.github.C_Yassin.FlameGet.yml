@@ -10,6 +10,15 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=xdg-download
+cleanup:
+  - /share/bash-completion
+  - /share/doc
+  - /share/fish
+  - /share/man
+  - /share/zsh
+  - /share/flameget/binaries/aria2c.exe
+  - /share/flameget/binaries/tray.bin
+  - /share/flameget/binaries/tray.exe
 modules:
   - name: aria2
     buildsystem: autotools
@@ -59,4 +68,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/C-Yassin/FlameGet
-        commit: 04d5e4a6530cfe42970ae8096594eec4a12bdc31
+        commit: 3675205d36a02ddefcfb62ba3a52dd9e5e0fd849
