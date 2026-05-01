@@ -10,6 +10,8 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=xdg-download
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
 cleanup:
   - /share/bash-completion
   - /share/doc
@@ -20,6 +22,122 @@ cleanup:
   - /share/flameget/binaries/tray.bin
   - /share/flameget/binaries/tray.exe
 modules:
+  # this is very very painful...but at least it works.. 
+  - name: intltool
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+        sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
+  - name: dbus-glib
+    config-opts:
+      - --disable-static
+      - --disable-gtk-doc
+    build-options:
+      env:
+        CFLAGS: "-Wno-error -DGLIB_DISABLE_DEPRECATION_WARNINGS"
+    sources:
+      - type: archive
+        url: https://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-0.112.tar.gz
+        sha256: 7d550dccdfcd286e33895501829ed971eeb65c614e73aadb4a08aeef719b143a
+      - type: shell
+        commands:
+          - find . -name "Makefile.in" -exec sed -i 's/-Werror//g' {} +
+          - find . -name "Makefile.am" -exec sed -i 's/-Werror//g' {} +
+          - sed -i 's/-Werror//g' configure
+          - sed -i 's/dbus_bool_t bool;/dbus_bool_t v_bool;/g' dbus/dbus-gvalue.c
+          - sed -i 's/&bool/\&v_bool/g' dbus/dbus-gvalue.c
+          - sed -i 's/value, bool/value, v_bool/g' dbus/dbus-gvalue.c
+  
+  - name: libappindicator
+    config-opts:
+      - --with-gtk=3
+      - --disable-static
+      - --disable-tests
+      - --disable-gtk-doc
+      - --enable-introspection=yes
+    build-options:
+      cflags: "-Wno-error -Wno-deprecated-declarations -Wno-incompatible-pointer-types"
+    sources:
+      - type: archive
+        url: https://launchpad.net/libappindicator/12.10/12.10.0/+download/libappindicator-12.10.0.tar.gz
+        sha256: d5907c1f98084acf28fd19593cb70672caa0ca1cf82d747ba6f4830d4cc3b49f
+      - type: shell
+        commands:
+          - sed -i '/AM_PATH_PYTHON/d' configure.ac
+          - sed -i '/APPINDICATOR_PYTHON/,/PYGTK_CODEGEN/d' configure.ac
+          - sed -i '/AM_CHECK_PYTHON_HEADERS/d' configure.ac
+          - sed -i '/bindings/d' configure.ac
+          - sed -i 's/bindings//g' Makefile.am
+          - sed -i '/AM_INIT_AUTOMAKE/a AM_PROG_AR' configure.ac
+          - sed -i 's/-Werror//g' src/Makefile.am
+          - sed -i 's/-Werror//g' src/Makefile.in
+          - autoreconf -fi
+
+    modules:
+      - name: gnome-doc-utils
+        config-opts:
+          - --disable-scrollkeeper
+        sources:
+          - type: archive
+            url: http://ftp.gnome.org/pub/GNOME/sources/gnome-doc-utils/0.20/gnome-doc-utils-0.20.10.tar.xz
+            sha256: cb0639ffa9550b6ddf3b62f3b1add92fb92ab4690d351f2353cffe668be8c4a6
+          - type: shell
+            commands:
+              - sed -i 's/ doc//g' Makefile.in
+              - sed -i 's/ doc//g' Makefile.am
+              - echo '#!/bin/sh' > xml2po/xml2po/xml2po.py.in
+              - echo 'exit 0' >> xml2po/xml2po/xml2po.py.in
+            
+      - name: libdbusmenu
+        config-opts:
+          - --with-gtk=3
+          - --disable-static
+          - --disable-tests
+          - --disable-gtk-doc
+          - --disable-doc
+          - --disable-dumper
+          - --disable-vala
+        build-options:
+          env:
+            HAVE_VALGRIND_TRUE: "'#'"
+            HAVE_VALGRIND_FALSE: "''"
+            CFLAGS: "-Wno-error=deprecated-declarations" 
+        sources:
+          - type: archive
+            url: https://launchpad.net/libdbusmenu/12.10/12.10.2/+download/libdbusmenu-12.10.2.tar.gz
+            sha256: 9d6ad4a0b918b342ad2ee9230cce8a095eb601cb0cee6ddc1122d0481f9d04c9
+          - type: shell
+            commands:
+              - find . -name "Makefile.in" -exec sed -i 's/-Werror//g' {} +
+              - find . -name "Makefile.am" -exec sed -i 's/-Werror//g' {} +
+              - sed -i 's/-Werror//g' configure
+            
+      - name: libindicator
+        config-opts:
+          - --with-gtk=3
+          - --disable-static
+          - --disable-tests
+          - --disable-gtk-doc
+        build-options:
+          env:
+            CFLAGS: "-Wno-error=deprecated-declarations -Wno-error"
+        sources:
+          - type: archive
+            url: https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
+            sha256: b2d2e44c10313d5c9cd60db455d520f80b36dc39562df079a3f29495e8f9447f
+          - type: shell
+            commands:
+              - find . -name "Makefile.in" -exec sed -i 's/-Werror//g' {} +
+              - find . -name "Makefile.am" -exec sed -i 's/-Werror//g' {} +
+              - sed -i 's/-Werror//g' configure
+              - sed 's/LIBINDICATOR_LIBS+="$LIBM"/LIBINDICATOR_LIBS+=" $LIBM"/g' -i configure
+              - sed 's/LIBM="-lmw"/LIBM=" -lmw"/g' -i configure
+              - sed 's/LIBM="-lm"/LIBM=" -lm"/g' -i configure
+              - sed 's/LIBS="-lm  $LIBS"/LIBS=" -lm  $LIBS"/g' -i configure
+              - sed 's/LIBS="-lmw  $LIBS"/LIBS=" -lmw  $LIBS"/g' -i configure
+
   - name: aria2
     buildsystem: autotools
     config-opts:
@@ -68,4 +186,4 @@ modules:
     sources:
       - type: git
         url: https://github.com/C-Yassin/FlameGet
-        commit: 3675205d36a02ddefcfb62ba3a52dd9e5e0fd849
+        commit: 575bba160574ffe8a498644711d12f5d6fcc5635
