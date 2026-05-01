@@ -79,6 +79,9 @@ modules:
       - name: gnome-doc-utils
         config-opts:
           - --disable-scrollkeeper
+        post-patch:
+          - cp /usr/share/gnu-config/config.sub .
+          - cp /usr/share/gnu-config/config.guess .
         sources:
           - type: archive
             url: http://ftp.gnome.org/pub/GNOME/sources/gnome-doc-utils/0.20/gnome-doc-utils-0.20.10.tar.xz
