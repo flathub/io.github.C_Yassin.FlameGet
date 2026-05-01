@@ -85,8 +85,8 @@ modules:
             sha256: cb0639ffa9550b6ddf3b62f3b1add92fb92ab4690d351f2353cffe668be8c4a6
           - type: shell
             commands:
-              - cp /usr/share/gnu-config/config.sub .
-              - cp /usr/share/gnu-config/config.guess .
+              - cp $(automake --print-libdir)/config.sub .
+              - cp $(automake --print-libdir)/config.guess .
               - sed -i 's/ doc//g' Makefile.in
               - sed -i 's/ doc//g' Makefile.am
               - echo '#!/bin/sh' > xml2po/xml2po/xml2po.py.in
