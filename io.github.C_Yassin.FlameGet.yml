@@ -22,6 +22,7 @@ cleanup:
   - /share/flameget/binaries/tray.exe
   - /share/flameget/build 
   - /share/flameget/repo-data
+  - /share/flameget/configs/settings.json
   - /share/flameget/README.md
 modules:
   # this is very very painful...but at least it works.. 
